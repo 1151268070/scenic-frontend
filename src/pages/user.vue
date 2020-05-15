@@ -6,12 +6,12 @@
     <Table border :columns="columns" :loading="modalLoading" :data="userData"></Table>
     <Modal
       v-model="modalShow"
-      @on-ok="modalok('adminForm')"
+      @on-ok="modalok()"
       width="50"
       :title="isAdd ? '新增用户' : '编辑用户'"
       :loading="modalLoading"
       :okText="isAdd ? '新增' : '保存'">
-      <Form ref="adminForm" :label-width="150" :model="data" :rules="rules">
+      <Form :label-width="150" :model="data" :rules="rules">
         <FormItem label="名字" prop="name">
           <Input v-model.trim="data.name"/>
         </FormItem>
@@ -19,10 +19,28 @@
           <Input v-model.trim="data.username"/>
         </FormItem>
         <FormItem label="密码" prop="password" v-if="isAdd">
-          <Input v-model.trim="data.password"/>
+          <Input type="password" v-model.trim="data.password"/>
         </FormItem>
         <FormItem label="手机号" prop="mobile">
           <Input v-model.trim="data.mobile"/>
+        </FormItem>
+      </Form>
+    </Modal>
+    <Modal
+      v-model="changeShow"
+      width="50"
+      :title="'修改密码'"
+      :loading="modalLoading"
+      :okText="'修改'">
+      <Form ref="userPasswd" :label-width="150" :model="data" :rules="ruleCustom">
+        <FormItem label="名字" prop="name">
+          <Input readonly v-model.trim="changePwdUser.name"/>
+        </FormItem>
+        <FormItem label="密码" prop="password">
+          <Input type="password" v-model.trim="changePwdUser.password"/>
+        </FormItem>
+        <FormItem label="确认密码" prop="passwdCheck">
+          <Input type="password" v-model.trim="changePwdUser.passwdCheck"/>
         </FormItem>
       </Form>
     </Modal>
@@ -31,8 +49,28 @@
 
 <script>
   export default {
-    name: "emplyees",
+    name: "user",
     data() {
+      const validatePass = (rule, value, callback) => {
+        if (this.changePwdUser.password === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.changePwdUser.passwdCheck !== '') {
+            // 对第二个密码框单独验证
+            this.$refs.userPasswd.validateField('passwdCheck');
+          }
+          callback();
+        }
+      };
+      const validatePassCheck = (rule, value, callback) => {
+        if (this.changePwdUser.passwdCheck === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (this.changePwdUser.passwdCheck !== this.changePwdUser.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         modalShow: false,
         changeShow: false,
@@ -47,6 +85,12 @@
           password: "",
           position: "",
           username: ""
+        },
+        changePwdUser: { // 当前修改密码的用户
+          id: "",
+          name: "芜湖大司马",
+          password: "",
+          passwdCheck: "",
         },
         userData: [{
           name: "芜湖大司马",
@@ -88,7 +132,7 @@
                     click: () => {
                       this.data = param.row;
                       this.indexs = param.index;
-                      this.handleEmployess("edit");
+                      this.handleEmployess("edit", this.indexs);
                     }
                   }
                 }, "编辑"),
@@ -99,8 +143,8 @@
                   on: {
                     click: () => {
                       this.changeShow = true;
-                      this.useData.id = param.row.id;
-                      this.useData.username = param.row.username;
+                      this.changePwdUser.id = param.row.id;
+                      this.changePwdUser.username = param.row.username;
                     }
                   }
                 }, "修改密码")
@@ -112,6 +156,14 @@
           name: [
             { required: true, message: "员工姓名不能为空" }
           ]
+        },
+        ruleCustom: {
+          password: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
+          passwdCheck: [
+            { validator: validatePassCheck, trigger: 'blur' }
+          ],
         }
       };
     },
@@ -165,13 +217,6 @@
 
     },
     mounted() {
-      this.userData.forEach(item => {
-        if (item.genderName === 1) {
-          item.genderName = "男";
-        } else if (item.genderName === 2) {
-          item.genderName = "女";
-        }
-      });
       console.log(this.userData);
     }
   };
