@@ -26,6 +26,15 @@ const childrenRouter = [
       title: "员工管理",
       permission: "Employees"
     }
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: () => import("@/pages/user.vue"),
+    meta: {
+      title: "用户管理",
+      permission: "User"
+    }
   }
 ];
 

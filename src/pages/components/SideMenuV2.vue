@@ -98,7 +98,7 @@
           if (menu.permission === permission) {
             path.push(menu);
             break;
-          } else if (menu.children.length > 0) {
+          } else if (menu.children && menu.children.length > 0) {
             path = this.recursionPath(menu.children, permission);
             if (path.length > 0) {
               path.unshift(menu);

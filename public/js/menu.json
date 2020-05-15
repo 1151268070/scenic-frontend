@@ -29,10 +29,10 @@
           "modifyTime": "2019-01-24 14:06:34",
           "name": "用户账号管理",
           "parentId": 10028,
-          "permission":"storages",
+          "permission":"user",
           "sortOrder": 0,
           "type": 2,
-          "url": "/storages"
+          "url": "/user"
         },
         {
           "createTime": "2019-01-24 14:06:56",
