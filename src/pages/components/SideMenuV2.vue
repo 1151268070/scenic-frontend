@@ -123,7 +123,6 @@
       },
     },
     mounted() {
-      console.log(111);
       Vue.axios.get('/js/menu.json')
         .then((result) => {
           this.menus = result.data.data;

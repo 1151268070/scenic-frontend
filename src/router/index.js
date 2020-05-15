@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import childrenRouter from './childrenRouter';
+import childrenRouter from "./childrenRouter";
 
 Vue.use(VueRouter);
 let mainRouteChildren = [];
@@ -9,12 +9,12 @@ const routes = [
   {
     path: "/",
     name: "MainV2",
-    component: () => import('../pages/MainV2'),
+    component: () => import("../pages/MainV2"),
     children: mainRouteChildren,
     meta: {
       ignoreLoginAuth: true,
-      title: '首页',
-    },
+      title: "首页"
+    }
   },
   {
     path: "/about",
