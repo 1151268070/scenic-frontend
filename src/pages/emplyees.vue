@@ -3,13 +3,12 @@
     <div>
       <Button type="primary" @click="handleEmployess('add')">新增员工</Button>
     </div>
-    <Table border :columns="columns" :loading="loading" :data="employessData"></Table>
+    <Table border :columns="columns" :data="employessData"></Table>
     <Modal
       v-model="modalShow"
       @on-ok="modalok('adminForm')"
       width="50"
       :title="isAdd ? '新增员工' : '编辑编辑'"
-      :loading="modalLoading"
       :okText="isAdd ? '新增' : '保存'">
       <Form ref="adminForm" :label-width="150" :model="data" :rules="rules">
         <FormItem label="名字" prop="name">
@@ -134,7 +133,7 @@
       };
     },
     methods: {
-      handleEmployess(type, index) {
+      handleEmployess(type) {
         this.modalShow = true;
         this.isAdd = type === "add";
         if (this.isAdd) {
@@ -146,7 +145,6 @@
             { required: true, message: "用户名不能为空" }
           ];
         }
-        console.log(index);
       },
       clean() {
         this.data.genderName = 0;
@@ -164,7 +162,9 @@
           this.data.modifyTime = this.data.createTime;
           this.employessData.push(this.data);
         } else {
-          this.data.modifierTime = this.handleCreteTime(timestamp);
+          this.data.createTime = this.employessData[this.indexs].createTime;
+          this.data.modifyTime = this.handleCreteTime(timestamp);
+          this.employessData.splice(this.indexs, 1, this.data);
         }
       },
       handleCreteTime(shijianchuo) {
